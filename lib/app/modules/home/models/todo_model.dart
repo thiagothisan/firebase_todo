@@ -3,12 +3,29 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class TodoModel {
   String title;
   bool check;
-  final DocumentReference reference;
+  DocumentReference reference;
 
-  TodoModel({this.reference, this.title, this.check});
+  TodoModel({this.reference, this.title = '', this.check = false});
 
   factory TodoModel.fromDocument(DocumentSnapshot doc) {
     return TodoModel(
-        check: doc['check'], title: doc['title'], reference: doc.reference);
+        title: doc['title'], check: doc['check'], reference: doc.reference);
+  }
+
+  Future delete() {
+    return reference.delete();
+  }
+
+  Future save() async {
+    if (reference == null) {
+      int total = (await Firestore.instance.collection('todo').getDocuments())
+          .documents
+          .length;
+      reference = await Firestore.instance
+          .collection('todo')
+          .add({'title': title, "check": check, 'position': total});
+    } else {
+      reference.updateData({'title': title, "check": check});
+    }
   }
 }
