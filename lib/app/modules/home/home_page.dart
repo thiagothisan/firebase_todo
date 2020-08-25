@@ -1,3 +1,4 @@
+import 'package:firebase_todo/app/modules/home/components/item_tile.dart';
 import 'package:firebase_todo/app/modules/home/models/todo_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -42,22 +43,8 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
           itemCount: list.length,
           itemBuilder: (_, index) {
             TodoModel model = list[index];
-            return ListTile(
-              leading: Checkbox(
-                value: model.check,
-                onChanged: (check) {
-                  model.check = check;
-                  model.save();
-                },
-              ),
-              title: Text(model.title),
-              trailing: IconButton(
-                onPressed: model.delete,
-                icon: Icon(
-                  Icons.delete,
-                  color: Colors.red,
-                ),
-              ),
+            return ItemTile(
+              model: model,
               onTap: () {
                 _showDialog(model);
               },
@@ -96,7 +83,7 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
               ),
               FlatButton(
                 onPressed: () async {
-                  await model.save();
+                  await controller.save(model);
                   Modular.to.pop();
                 },
                 child: Text('Salvar'),

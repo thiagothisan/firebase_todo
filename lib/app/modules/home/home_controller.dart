@@ -20,4 +20,8 @@ abstract class _HomeControllerBase with Store {
   getList() {
     todoList = reposytory.getAll().asObservable();
   }
+
+  Future save(TodoModel model) => reposytory.save(model);
+
+  Future delete(TodoModel model) => reposytory.delete(model);
 }
